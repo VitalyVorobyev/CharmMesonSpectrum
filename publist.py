@@ -46,4 +46,16 @@ PUBS = {
         'https://doi.org/10.1016/j.physletb.2020.135395',
         'Phys. Lett. B 804 (2020) 135395', 2020, 'BESIII'
     ),
+    'DEL-AMO-SA... 10P': pub_item(
+        'https://doi.org/10.1103/PhysRevD.82.111101',
+        'Phys. Rev. D 82 (2010) 111101(R)', 2010, 'BaBar'
+    ),
+    'AAIJ 13CC': pub_item(
+        'https://doi.org/10.1007/JHEP09(2013)145',
+        'JHEP 09 (2013) 145', 2013, 'LHCb'
+    ),
+    'AAIJ 16AH': pub_item(
+        'https://doi.org/10.1103/PhysRevD.94.072001',
+        'Phys. Rev. D 94 (2016) 072001', 2016, 'LHCb'
+    ),
 }
