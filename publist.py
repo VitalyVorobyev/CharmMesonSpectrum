@@ -66,6 +66,10 @@ PUBS = {
         'https://doi.org/10.1016/0370-2693(89)91737-1',
         'Phys. Lett. B 221 (1989) 422', 1988, 'ARGUS'
     ),
+    'ALBRECHT 89H': pub_item(
+        'https://doi.org/10.1016/0370-2693(89)90764-8',
+        'Phys. Lett. B 232 (1989) 398', 1989, 'ARGUS'
+    ),
     'AVERY 90': pub_item(
         'https://doi.org/10.1103/PhysRevD.41.774',
         'Phys. Rev. D 41 (1990) 774', 1990, 'CLEO'

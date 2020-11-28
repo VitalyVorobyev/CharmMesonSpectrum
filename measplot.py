@@ -64,6 +64,7 @@ def mplot():
                      markersize=14, marker=SHAPES[jp], color=col, fillstyle='none',
                      linestyle='none', label=pdgid + ' ' + jp)
     plt.minorticks_on()
+    plt.xlim((2250, 3500))
     plt.grid(which='major')
     plt.grid(which='minor', linestyle='--')
     plt.legend(fontsize=14)
