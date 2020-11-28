@@ -28,7 +28,7 @@ PUBS = {
     ),
     'BERGFELD 94B': pub_item(
         'https://doi.org/10.1016/0370-2693(94)01348-9',
-        'Phys. Lett. B 331 (1994) 236', 1994, 'CLEO'
+        'Phys. Lett. B 340 (1994) 194', 1994, 'CLEO'
     ),
     'ABE 05A': pub_item(
         'https://doi.org/10.1103/PhysRevLett.94.221805',
@@ -57,5 +57,25 @@ PUBS = {
     'AAIJ 16AH': pub_item(
         'https://doi.org/10.1103/PhysRevD.94.072001',
         'Phys. Rev. D 94 (2016) 072001', 2016, 'LHCb'
+    ),
+    'AAIJ 15V': pub_item(
+        'https://doi.org/10.1103/PhysRevD.91.092002',
+        'Phys. Rev. D 91 (2015) 092002', 2015, 'LHCb'
+    ),
+    'ALBRECHT 89B': pub_item(
+        'https://doi.org/10.1016/0370-2693(89)91737-1',
+        'Phys. Lett. B 221 (1989) 422', 1988, 'ARGUS'
+    ),
+    'AVERY 90': pub_item(
+        'https://doi.org/10.1103/PhysRevD.41.774',
+        'Phys. Rev. D 41 (1990) 774', 1990, 'CLEO'
+    ),
+    'FRABETTI 94B': pub_item(
+        'https://doi.org/10.1103/PhysRevLett.72.324',
+        'Phys. Rev. Lett. 72 (1994) 324', 1994, 'E687'
+    ),
+    'AVERY 94C': pub_item(
+        'https://doi.org/10.1016/0370-2693(94)90968-7',
+        'Phys. Lett. B 331 (1994) 236', 1994, 'CLEO'
     ),
 }

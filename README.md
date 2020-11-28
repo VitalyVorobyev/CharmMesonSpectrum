@@ -1,6 +1,6 @@
 # Charmed meson spectroscopy
 
-The [`measplot.py`](measplot.py) script produces the following plot:
+The [measplot.py](measplot.py) script produces the following plot:
 
 ![](plots/mspec.png)
 

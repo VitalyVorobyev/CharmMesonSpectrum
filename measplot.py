@@ -7,6 +7,12 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams.update({'font.size': 18})
 
+# matplotlib.rc ('text', usetex=False)
+# font = {'family' : "serif",
+#         'weight' : 'normal',
+#         'size' : 18}
+# matplotlib.rc ("font", **font)
+
 from measlist import MEAS
 
 def oplus(*args):
@@ -21,6 +27,8 @@ SHAPES = {
     r'$0^-$': '^',
     r'$1^+$': 'd',
     r'$1^-$': 's',
+    r'$2^+$': 'P',
+    r'$2^-$': 'X',
     r'$3^-$': '*',
     r'un': r'$U$',
     r'n': r'$N$',
