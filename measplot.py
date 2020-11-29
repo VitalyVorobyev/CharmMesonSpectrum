@@ -64,10 +64,10 @@ def mplot():
                      markersize=14, marker=SHAPES[jp], color=col, fillstyle='none',
                      linestyle='none', label=pdgid + ' ' + jp)
     plt.minorticks_on()
-    plt.xlim((2250, 3500))
+    plt.xlim((1950, 3550))
     plt.grid(which='major')
     plt.grid(which='minor', linestyle='--')
-    plt.legend(fontsize=14)
+    plt.legend(fontsize=14, ncol=3)
     plt.xlabel('Mass, MeV')
     plt.ylabel('Width, MeV')
     plt.tight_layout()

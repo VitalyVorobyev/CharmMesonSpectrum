@@ -82,4 +82,24 @@ PUBS = {
         'https://doi.org/10.1016/0370-2693(94)90968-7',
         'Phys. Lett. B 331 (1994) 236', 1994, 'CLEO'
     ),
+    'TOMARADZE 15': pub_item(
+        'https://doi.org/10.1103/PhysRevD.91.011102',
+        'Phys. Rev. D 91 (2015) 011102(R)', 2015, 'CLEO-c'
+    ),
+    'LEES 13X': pub_item(
+        'https://doi.org/10.1103/PhysRevLett.111.111801',
+        'Phys. Rev. Lett. 111 (2013) 111801', 2013, 'BaBar'
+    ),
+    'AAIJ 20D' : pub_item(
+        'https://doi.org/10.1103/PhysRevD.101.032005',
+        'Phys. Rev. D 101 (2020) 032005', 2020, 'LHCb'
+    ),
+    'ALBRECHT 89F' : pub_item(
+        'https://doi.org/10.1016/0370-2693(89)90141-X',
+        'Phys. Lett. B 231 (1989) 208', 1989, 'ARGUS'
+    ),
+    'KUZMIN 07': pub_item(
+        'https://doi.org/10.1103/PhysRevD.76.012006',
+        'Phys. Rev. D 76 (2007) 012006', 2007, 'Belle'
+    )
 }
