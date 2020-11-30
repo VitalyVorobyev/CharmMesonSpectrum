@@ -1,7 +1,4 @@
-import numpy as np
-
-def oplus(*args):
-    return np.sqrt(np.sum(x**2 for x in args))
+from average import oplus
 
 def mval(val, stat, syst):
     return {
