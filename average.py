@@ -18,11 +18,13 @@ def average(mlist):
         return (mlist[0]['value'], full_err(mlist[0]), 0, 1)
     vals = np.array([item['value'] for item in mlist])
     errs = np.array(list(map(full_err, mlist)))
+    if 0 in errs:
+        print('Zero error found!')
+        idx = np.nonzero(errs==0)[0][0]
+        return (vals[idx], errs[idx], 0, 1)
     mval = np.average(vals, weights=1./ errs**2)
-    errn = np.sum(errs**-2)**-0.5
-    chisq = np.sum(((vals - mval) / errs)**2)
-    # pval = stats.chisquare(f_obs=chisq, ddof=vals.size)[1]
-    return (mval, errn, chisq, vals.size)
+    return (mval, np.sum(errs**-2)**-0.5,
+            np.sum(((vals - mval) / errs)**2), vals.size)
 
 def averaged_meas(df):
     return {pdgid : {
