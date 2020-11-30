@@ -46,7 +46,7 @@ PUBS = {
         'https://doi.org/10.1016/j.physletb.2020.135395',
         'Phys. Lett. B 804 (2020) 135395', 2020, 'BESIII'
     ),
-    'DEL-AMO-SA... 10P': pub_item(
+    'DEL-AMO 10P': pub_item(
         'https://doi.org/10.1103/PhysRevD.82.111101',
         'Phys. Rev. D 82 (2010) 111101(R)', 2010, 'BaBar'
     ),

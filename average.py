@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 def oplus(*args):
-    return np.sqrt(np.sum(x**2 for x in args))
+    return np.sqrt(np.sum((np.fromiter((x**2 for x in args), dtype=np.float))))
 
 def maxerr(err):
     return max(err) if isinstance(err, list) else err

@@ -15,10 +15,10 @@ matplotlib.rcParams.update({'font.size': 18})
 
 from measlist import MEAS
 from states import PREDICTIED, STATES
-from average import averaged_meas
+from average import averaged_meas, oplus
 
-def oplus(*args):
-    return np.sqrt(np.sum(x**2 for x in args))
+# def oplus(*args):
+    # return np.sqrt(np.sum(x**2 for x in args))
 
 COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
           '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
@@ -79,9 +79,7 @@ def mplot():
     for ext in ['png', 'svg', 'pdf']:
         plt.savefig(f'plots/mspec.{ext}')
 
-    plt.show()
-
-def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=12):
+def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=14):
     def posgen():
         cols = ['b', 'r', 'k', 'g']
         for i in range(100):
@@ -104,7 +102,7 @@ def average_plot():
             mass[0], width[0], xerr=mass[1], yerr=width[1],
             markersize=8, marker=SHAPES[STATES[pdgid]['jp']], linestyle='none',
             label=f'{STATES[pdgid]["name"]} ({chisq:.2f})')
-    plot_potential_predictions(ax)
+    plot_potential_predictions(ax, fsize=16)
 
     ax.minorticks_on()
     ax.set_ylim((0, 500))
@@ -120,11 +118,11 @@ def average_plot():
     for ext in ['png', 'svg', 'pdf']:
         plt.savefig(f'plots/averaged.{ext}')
 
-    plt.show()
 
 def main():
-    # mplot()
+    mplot()
     average_plot()
+    plt.show()
 
 if __name__ == '__main__':
     main()
