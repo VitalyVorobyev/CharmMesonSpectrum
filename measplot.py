@@ -94,15 +94,27 @@ def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=14):
 def average_plot():
     data = averaged_meas(pd.DataFrame(MEAS).dropna())
     fig, ax = plt.subplots(figsize=(12, 8))
+    ylo, yhi, delta = 0, 500, 25
 
+    def posgen(n=4):
+        for i in range(100):
+            yield yhi - delta * (i%n + 1)
+
+    pg = posgen(7)
+    next(pg)
     for pdgid, item in data.items():
         mass, width = item['mass'], item['width']
-        chisq = (mass[2] + width[2]) / (mass[3] + width[3])
+        chisq, ndf = mass[2] + width[2], mass[3] + width[3]
+        col = STATES[pdgid]['color']
         ax.errorbar(
             mass[0], width[0], xerr=mass[1], yerr=width[1], markersize=8, linestyle='none',
-            marker=SHAPES[STATES[pdgid]['jp']], color=STATES[pdgid]['color'],
-            label=f'{STATES[pdgid]["name"]} ({chisq:.2f})')
-    plot_potential_predictions(ax, fsize=16)
+            marker=SHAPES[STATES[pdgid]['jp']], color=col,
+            label=rf'{STATES[pdgid]["name"]} (${chisq:.1f}/{ndf}$)')
+        if STATES[pdgid]['assignment'] in PREDICTIED:
+            key = STATES[pdgid]['assignment']
+            lbl, pos = PREDICTIED[key]
+            ax.plot([pos, pos], [ylo, yhi], color=col, linestyle=':')
+            ax.text(pos, next(pg), fr'{lbl}({key})', color=col, fontsize=14)
 
     ax.minorticks_on()
     ax.set_ylim((0, 500))
@@ -110,7 +122,7 @@ def average_plot():
     ax.set_xlim((1950, 3550))
     ax.grid(which='major')
     ax.grid(which='minor', linestyle='--')
-    ax.legend(fontsize=14, ncol=1)
+    ax.legend(fontsize=14, ncol=1, loc='lower right')
     ax.set_xlabel('Mass, MeV')
     ax.set_ylabel('Width, MeV')
     fig.tight_layout()
@@ -150,8 +162,8 @@ def excl_vs_incl():
 
 
 def main():
-    mplot(byname=True)
-    # average_plot()
+    # mplot(byname=True)
+    average_plot()
     # excl_vs_incl()
     plt.show()
 
