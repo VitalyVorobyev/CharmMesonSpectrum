@@ -2,7 +2,7 @@
 
 The [measplot.py](measplot.py) script produces the following plot:
 
-![spectrum plot](plots/mspec.png)
+![spectrum plot](plots/mspec_byname.png)
 
 * [measlist.py](measlist.py) - list of measurements
 * [publist.py](publist.py) - list of publications

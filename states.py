@@ -1,3 +1,5 @@
+from colors import kelly_gen
+
 STATES = {
     'M061' : {
         'name': r'$D^*(2007)^0$',
@@ -26,7 +28,7 @@ STATES = {
     'M120' : {
         'name' : r'$D_1(2420)^{\pm}$',
         'fs': [r'$D^{*0}\pi^+$', r'$D^+\pi^+\pi^-$'],
-        'jp': 'unkn',
+        'jp': 'undef',
         'assigmnet': '',
     },
     'M150' : {
@@ -91,6 +93,9 @@ STATES = {
     }
 }
 
+colgen = kelly_gen()
+for _, item in STATES.items():
+    item['color'] = next(colgen)
 
 PREDICTIED = {
     # Godfrey and Moats, Phys.Rev. D 93 (2016) 034035
@@ -105,7 +110,6 @@ PREDICTIED = {
     r'$1^3D_3$':      [r'$D_3^*$',      2833],
     r'$1D_2^\prime$': [r'$D_2^\prime$', 2845],
     r'$1^3F_4$':      [r'$D_4^*$',      3113],
-
     r'$2^1S_0$':      [r'$D$',          2581],
     r'$2^3S_1$':      [r'$D^*$',        2643],
 }

@@ -1,31 +1,17 @@
 #! /usr/bin/env python
 
-import itertools
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams.update({'font.size': 18})
 
-# matplotlib.rc ('text', usetex=False)
-# font = {'family' : "serif",
-#         'weight' : 'normal',
-#         'size' : 18}
-# matplotlib.rc ("font", **font)
-
 from measlist import MEAS
 from states import PREDICTIED, STATES
 from average import averaged_meas, oplus
 
-# def oplus(*args):
-    # return np.sqrt(np.sum(x**2 for x in args))
-
-COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-          '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-
 SHAPES = {
     'undef': 'o',
-    'unkn': 'o',
     r'$0^+$': 'v',
     r'$0^-$': '^',
     r'$1^+$': 'd',
@@ -37,9 +23,23 @@ SHAPES = {
     r'n': r'$N$',
 }
 
-def get_color():
-    for col in itertools.cycle(COLORS):
-        yield col
+def states_legend(ax, byname=True, x=0, y=0, marker='o', size=10, fontsize=14, loc='best'):
+    handles = []
+    for code, info in STATES.items():
+        handles.append(
+            ax.plot([x], [y], linestyle='none', color=info['color'], marker=marker,
+            markersize=size, label=info['name'] if byname else code)[0]
+        )
+    ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc))
+
+def jp_legend(ax, x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, loc='best'):
+    handles = []
+    for jp, shape in SHAPES.items():
+        handles.append(
+            ax.plot([x], [y], linestyle='none', color=color, fillstyle=fillstyle,
+                    marker=shape, markersize=size, label=jp)[0]
+        )
+    ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc))
 
 def error(mitem):
     stat = max(mitem['stat']) if isinstance(mitem['stat'], list) else mitem['stat']
@@ -55,29 +55,29 @@ def make_df():
     df['wval'] = df.apply(lambda x: x.width['value'], axis=1)
     return df
 
-def mplot():
+def mplot(byname=False):
     df = make_df()
-    colgen = get_color()
-    plt.figure(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, 8))
+    states_legend(ax, byname=byname, size=10, fontsize=14)
+    jp_legend_location = (0.695, 0.54) if byname else (0.745, 0.54)
+    jp_legend(ax, fillstyle='none', size=10, fontsize=14, loc=jp_legend_location)
     for pdgid, df0 in df.groupby('pdg'):
-        col = next(colgen)
         for jp, df1 in df0.groupby('JP'):
-            plt.errorbar(df1.mval, df1.wval, xerr=df1.merr, yerr=df1.werr,
-                     markersize=14, marker=SHAPES[jp], color=col, fillstyle='none',
-                     linestyle='none', label=pdgid + ' ' + jp)
-    plt.minorticks_on()
-    plt.ylim((0, 500))
+            ax.errorbar(
+               df1.mval, df1.wval, xerr=df1.merr, yerr=df1.werr, linestyle='none', markersize=14,
+               marker=SHAPES[jp], color=STATES[pdgid]['color'], fillstyle='none')
+    ax.minorticks_on()
+    ax.set_ylim((0, 500))
+    ax.set_xlim((1950, 3550))
+    ax.grid(which='major')
+    ax.grid(which='minor', linestyle='--')
+    ax.set_xlabel('Mass, MeV')
+    ax.set_ylabel('Width, MeV')
+    fig.tight_layout()
 
-    plt.xlim((1950, 3550))
-    plt.grid(which='major')
-    plt.grid(which='minor', linestyle='--')
-    plt.legend(fontsize=14, ncol=3)
-    plt.xlabel('Mass, MeV')
-    plt.ylabel('Width, MeV')
-    plt.tight_layout()
-
+    ofname = 'mspec_byname' if byname else 'mspec_byid'
     for ext in ['png', 'svg', 'pdf']:
-        plt.savefig(f'plots/mspec.{ext}')
+        plt.savefig(f'plots/{ofname}.{ext}')
 
 def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=14):
     def posgen():
@@ -99,8 +99,8 @@ def average_plot():
         mass, width = item['mass'], item['width']
         chisq = (mass[2] + width[2]) / (mass[3] + width[3])
         ax.errorbar(
-            mass[0], width[0], xerr=mass[1], yerr=width[1],
-            markersize=8, marker=SHAPES[STATES[pdgid]['jp']], linestyle='none',
+            mass[0], width[0], xerr=mass[1], yerr=width[1], markersize=8, linestyle='none',
+            marker=SHAPES[STATES[pdgid]['jp']], color=STATES[pdgid]['color'],
             label=f'{STATES[pdgid]["name"]} ({chisq:.2f})')
     plot_potential_predictions(ax, fsize=16)
 
@@ -119,9 +119,40 @@ def average_plot():
         plt.savefig(f'plots/averaged.{ext}')
 
 
+def excl_vs_incl():
+    data = pd.DataFrame(MEAS).dropna()
+    fig, ax = plt.subplots(figsize=(12, 8))
+    for incl, df in data.groupby('incl'):
+        fillstyle = 'none' if incl else 'full'
+        for pdgid, item in averaged_meas(df).items():
+            mass, width = item['mass'], item['width']
+            chisq = (mass[2] + width[2]) / (mass[3] + width[3])
+            ax.errorbar(
+                mass[0], width[0], xerr=mass[1], yerr=width[1],
+                markersize=8, marker=SHAPES[STATES[pdgid]['jp']], linestyle='none',
+                fillstyle=fillstyle,
+                label=f'{STATES[pdgid]["name"]} ({chisq:.2f}) {incl:d}')
+
+    plot_potential_predictions(ax, fsize=16)
+    ax.minorticks_on()
+    ax.set_ylim((0, 500))
+
+    ax.set_xlim((1950, 3550))
+    ax.grid(which='major')
+    ax.grid(which='minor', linestyle='--')
+    ax.legend(fontsize=12, ncol=2)
+    ax.set_xlabel('Mass, MeV')
+    ax.set_ylabel('Width, MeV')
+    fig.tight_layout()
+
+    for ext in ['png', 'svg', 'pdf']:
+        plt.savefig(f'plots/excl_incl.{ext}')
+
+
 def main():
-    mplot()
-    average_plot()
+    mplot(byname=True)
+    # average_plot()
+    # excl_vs_incl()
     plt.show()
 
 if __name__ == '__main__':
