@@ -23,14 +23,14 @@ SHAPES = {
     r'n': r'$N$',
 }
 
-def states_legend(ax, byname=True, x=0, y=0, marker='o', size=10, fontsize=14, loc='best'):
+def states_legend(ax, byname=True, x=0, y=0, marker='o', size=10, fontsize=14, loc='best', ncol=1):
     handles = []
     for code, info in STATES.items():
         handles.append(
             ax.plot([x], [y], linestyle='none', color=info['color'], marker=marker,
             markersize=size, label=info['name'] if byname else code)[0]
         )
-    ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc))
+    ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc, ncol=ncol))
 
 def jp_legend(ax, x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, loc='best'):
     handles = []
@@ -38,6 +38,15 @@ def jp_legend(ax, x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, l
         handles.append(
             ax.plot([x], [y], linestyle='none', color=color, fillstyle=fillstyle,
                     marker=shape, markersize=size, label=jp)[0]
+        )
+    ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc))
+
+def inex_legend(ax, shapes=['o', 'd'], x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, loc='best'):
+    handles = []
+    for lbl, m in zip(['incl', 'excl'], shapes):
+        handles.append(
+            ax.plot([x], [y], linestyle='none', color=color, fillstyle=fillstyle,
+                    marker=m, markersize=size, label=lbl)[0]
         )
     ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc))
 
@@ -131,28 +140,28 @@ def average_plot():
         plt.savefig(f'plots/averaged.{ext}')
 
 
-def excl_vs_incl():
+def excl_vs_incl(byname=True, fillstyle='none'):
     data = pd.DataFrame(MEAS).dropna()
     fig, ax = plt.subplots(figsize=(12, 8))
+    states_legend(ax, byname=byname, size=10, fontsize=14, ncol=3)
+    inex_legend_location = (0.885, 0.60)
+    inex_legend(ax, fillstyle=fillstyle, size=10, fontsize=14, loc=inex_legend_location)
     for incl, df in data.groupby('incl'):
-        fillstyle = 'none' if incl else 'full'
+        shape = 'o' if incl else 'd'
         for pdgid, item in averaged_meas(df).items():
             mass, width = item['mass'], item['width']
-            chisq = (mass[2] + width[2]) / (mass[3] + width[3])
+            chisq, ndf = mass[2] + width[2], mass[3] + width[3]
+            print(f'{pdgid} {incl:d}: {chisq:.1f}/{ndf}')
             ax.errorbar(
-                mass[0], width[0], xerr=mass[1], yerr=width[1],
-                markersize=8, marker=SHAPES[STATES[pdgid]['jp']], linestyle='none',
-                fillstyle=fillstyle,
-                label=f'{STATES[pdgid]["name"]} ({chisq:.2f}) {incl:d}')
+                mass[0], width[0], xerr=mass[1], yerr=width[1], markersize=8, color=STATES[pdgid]['color'],
+                marker=shape, linestyle='none', fillstyle=fillstyle)
 
-    plot_potential_predictions(ax, fsize=16)
     ax.minorticks_on()
-    ax.set_ylim((0, 500))
+    ax.set_ylim((0, 400))
 
-    ax.set_xlim((1950, 3550))
+    ax.set_xlim((2200, 3300))
     ax.grid(which='major')
     ax.grid(which='minor', linestyle='--')
-    ax.legend(fontsize=12, ncol=2)
     ax.set_xlabel('Mass, MeV')
     ax.set_ylabel('Width, MeV')
     fig.tight_layout()
@@ -163,8 +172,8 @@ def excl_vs_incl():
 
 def main():
     # mplot(byname=True)
-    average_plot()
-    # excl_vs_incl()
+    # average_plot()
+    excl_vs_incl()
     plt.show()
 
 if __name__ == '__main__':

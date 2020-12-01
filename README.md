@@ -10,6 +10,10 @@ The [measplot.py](measplot.py) script contains functions for plotting:
 
 ![averaged plot](plots/averaged.png)
 
+* `excl_vs_incl()` compares inclusive and inclusive measurements:
+
+![exclusive vs inclusive plot](plots/excl_incl.png)
+
 Other files are:
 
 * [measlist.py](measlist.py) - list of measurements
