@@ -41,13 +41,13 @@ STATES = {
         'name' : r'$D_0^*(2300)^0$',
         'fs': [r'$D^+\pi^-$'],
         'jp': r'$0^+$',
-        'assignment': r'$1^3P_2$',
+        'assignment': r'$1^3P_0$',
     },
     'M179' : {
         'name' : r'$D_0^*(2300)^{\pm}$',
         'fs': [r'$D^0\pi^+$'],
         'jp': r'$0^+$',
-        'assignment': r'$1^3P_2$',
+        'assignment': r'$1^3P_0$',
     },
     'M180' : {
         'name' : r'$D_1(2430)^0$',

@@ -186,13 +186,13 @@ def excl_vs_incl(byname=True, fillstyle='none', select=None, xlim=(2200, 3300), 
 
 
 def main():
-    select = ['M097', 'M120', 'M119', 'M150']
-    xlim = (2400, 2500)
-    ylim = (0, 80)
+    select = ['M178', 'M179', 'M097', 'M120', 'M119', 'M150']
+    xlim = (2250, 2520)
+    ylim = (0, 350)
     figsize=(10, 7)
     mplot(byname=True, select=select, xlim=xlim, ylim=ylim)
-    average_plot(select=select, xlim=(2420, 2510), ylim=(0, 60))
-    excl_vs_incl(select=select, xlim=(2415, 2480), ylim=(0, 70))
+    average_plot(select=select, xlim=xlim, ylim=ylim)
+    excl_vs_incl(select=select, xlim=xlim, ylim=ylim)
     plt.show()
 
 if __name__ == '__main__':
