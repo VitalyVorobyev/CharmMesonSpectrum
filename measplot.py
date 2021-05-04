@@ -100,7 +100,7 @@ def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=14):
         ax.plot([pos, pos], [ylo, yhi], color=col, linestyle=':')
         ax.text(pos, y, fr'{lbl}({key})', color=col, fontsize=fsize)
 
-def average_plot():
+def average_plot(select=None, xlim=(1950, 3550), ylim=(0, 500)):
     data = averaged_meas(pd.DataFrame(MEAS).dropna())
     fig, ax = plt.subplots(figsize=(12, 8))
     ylo, yhi, delta = 0, 500, 25
@@ -112,6 +112,8 @@ def average_plot():
     pg = posgen(7)
     next(pg)
     for pdgid, item in data.items():
+        if select and pdgid not in select:
+            continue
         mass, width = item['mass'], item['width']
         chisq, ndf = mass[2] + width[2], mass[3] + width[3]
         col = STATES[pdgid]['color']
@@ -126,9 +128,8 @@ def average_plot():
             ax.text(pos, next(pg), fr'{lbl}({key})', color=col, fontsize=14)
 
     ax.minorticks_on()
-    ax.set_ylim((0, 500))
-
-    ax.set_xlim((1950, 3550))
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
     ax.grid(which='major')
     ax.grid(which='minor', linestyle='--')
     ax.legend(fontsize=14, ncol=1, loc='lower right')
@@ -140,7 +141,7 @@ def average_plot():
         plt.savefig(f'plots/averaged.{ext}')
 
 
-def excl_vs_incl(byname=True, fillstyle='none'):
+def excl_vs_incl(byname=True, fillstyle='none', select=None, xlim=(2200, 3300), ylim=(0, 400)):
     data = pd.DataFrame(MEAS).dropna()
     fig, ax = plt.subplots(figsize=(12, 8))
     states_legend(ax, byname=byname, size=10, fontsize=14, ncol=3)
@@ -149,6 +150,8 @@ def excl_vs_incl(byname=True, fillstyle='none'):
     for incl, df in data.groupby('incl'):
         shape = 'o' if incl else 'd'
         for pdgid, item in averaged_meas(df).items():
+            if select and pdgid not in select:
+                continue
             mass, width = item['mass'], item['width']
             chisq, ndf = mass[2] + width[2], mass[3] + width[3]
             print(f'{pdgid} {incl:d}: {chisq:.1f}/{ndf}')
@@ -157,9 +160,8 @@ def excl_vs_incl(byname=True, fillstyle='none'):
                 marker=shape, linestyle='none', fillstyle=fillstyle)
 
     ax.minorticks_on()
-    ax.set_ylim((0, 400))
-
-    ax.set_xlim((2200, 3300))
+    ax.set_ylim(ylim)
+    ax.set_xlim(xlim)
     ax.grid(which='major')
     ax.grid(which='minor', linestyle='--')
     ax.set_xlabel('Mass, MeV')
@@ -171,9 +173,12 @@ def excl_vs_incl(byname=True, fillstyle='none'):
 
 
 def main():
+    select = ['M097', 'M120', 'M119', 'M150']
+    xlim = (2400, 2500)
+    ylim = (0, 80)
     # mplot(byname=True)
-    # average_plot()
-    excl_vs_incl()
+    average_plot(select=select, xlim=xlim, ylim=ylim)
+    excl_vs_incl(select=select, xlim=xlim, ylim=ylim)
     plt.show()
 
 if __name__ == '__main__':
