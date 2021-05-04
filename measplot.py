@@ -23,18 +23,24 @@ SHAPES = {
     r'n': r'$N$',
 }
 
-def states_legend(ax, byname=True, x=0, y=0, marker='o', size=10, fontsize=14, loc='best', ncol=1):
+
+def states_legend(ax, byname=True, x=0, y=0, marker='o', size=10, fontsize=14, loc='best', ncol=1, select=None):
     handles = []
     for code, info in STATES.items():
+        if select and code not in select:
+            continue
         handles.append(
             ax.plot([x], [y], linestyle='none', color=info['color'], marker=marker,
             markersize=size, label=info['name'] if byname else code)[0]
         )
     ax.add_artist(ax.legend(handles=handles, fontsize=fontsize, loc=loc, ncol=ncol))
 
-def jp_legend(ax, x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, loc='best'):
+
+def jp_legend(ax, x=0, y=0, color='k', size=10, fillstyle='full', fontsize=14, loc='best', select=None):
     handles = []
     for jp, shape in SHAPES.items():
+        if select and jp not in select:
+            continue
         handles.append(
             ax.plot([x], [y], linestyle='none', color=color, fillstyle=fillstyle,
                     marker=shape, markersize=size, label=jp)[0]
@@ -64,20 +70,27 @@ def make_df():
     df['wval'] = df.apply(lambda x: x.width['value'], axis=1)
     return df
 
-def mplot(byname=False):
+def mplot(byname=False, select=None, xlim=(1950, 3550), ylim=(0, 500), figsize=(12, 8)):
     df = make_df()
-    fig, ax = plt.subplots(figsize=(12, 8))
-    states_legend(ax, byname=byname, size=10, fontsize=14)
-    jp_legend_location = (0.695, 0.54) if byname else (0.745, 0.54)
-    jp_legend(ax, fillstyle='none', size=10, fontsize=14, loc=jp_legend_location)
+    fig, ax = plt.subplots(figsize=figsize)
+    states_legend(ax, byname=byname, size=10, fontsize=14, select=select)
+    jps = set()
     for pdgid, df0 in df.groupby('pdg'):
+        if select and pdgid not in select:
+            continue
         for jp, df1 in df0.groupby('JP'):
+            jps.add(jp)
             ax.errorbar(
                df1.mval, df1.wval, xerr=df1.merr, yerr=df1.werr, linestyle='none', markersize=14,
                marker=SHAPES[jp], color=STATES[pdgid]['color'], fillstyle='none')
+    
+    print(jps)
+    jp_legend_location = (0.695, 1 - 0.05 * len(jps)) if byname else (0.745, 1 - 0.05 * len(jps))
+    jp_legend(ax, fillstyle='none', size=10, fontsize=14, loc=jp_legend_location, select=jps)
+
     ax.minorticks_on()
-    ax.set_ylim((0, 500))
-    ax.set_xlim((1950, 3550))
+    ax.set_ylim(ylim)
+    ax.set_xlim(xlim)
     ax.grid(which='major')
     ax.grid(which='minor', linestyle='--')
     ax.set_xlabel('Mass, MeV')
@@ -100,10 +113,10 @@ def plot_potential_predictions(ax, ylo=0, yhi=500, delta=25, fsize=14):
         ax.plot([pos, pos], [ylo, yhi], color=col, linestyle=':')
         ax.text(pos, y, fr'{lbl}({key})', color=col, fontsize=fsize)
 
-def average_plot(select=None, xlim=(1950, 3550), ylim=(0, 500)):
+def average_plot(select=None, xlim=(1950, 3550), ylim=(0, 500), figsize=(12, 8)):
     data = averaged_meas(pd.DataFrame(MEAS).dropna())
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ylo, yhi, delta = 0, 500, 25
+    fig, ax = plt.subplots(figsize=figsize)
+    ylo, yhi, delta = 0, ylim[-1], ylim[-1] // 10
 
     def posgen(n=4):
         for i in range(100):
@@ -141,10 +154,10 @@ def average_plot(select=None, xlim=(1950, 3550), ylim=(0, 500)):
         plt.savefig(f'plots/averaged.{ext}')
 
 
-def excl_vs_incl(byname=True, fillstyle='none', select=None, xlim=(2200, 3300), ylim=(0, 400)):
+def excl_vs_incl(byname=True, fillstyle='none', select=None, xlim=(2200, 3300), ylim=(0, 400), figsize=(12, 8)):
     data = pd.DataFrame(MEAS).dropna()
-    fig, ax = plt.subplots(figsize=(12, 8))
-    states_legend(ax, byname=byname, size=10, fontsize=14, ncol=3)
+    fig, ax = plt.subplots(figsize=figsize)
+    states_legend(ax, byname=byname, size=10, fontsize=14, ncol=3, select=select)
     inex_legend_location = (0.885, 0.60)
     inex_legend(ax, fillstyle=fillstyle, size=10, fontsize=14, loc=inex_legend_location)
     for incl, df in data.groupby('incl'):
@@ -176,9 +189,10 @@ def main():
     select = ['M097', 'M120', 'M119', 'M150']
     xlim = (2400, 2500)
     ylim = (0, 80)
-    # mplot(byname=True)
-    average_plot(select=select, xlim=xlim, ylim=ylim)
-    excl_vs_incl(select=select, xlim=xlim, ylim=ylim)
+    figsize=(10, 7)
+    mplot(byname=True, select=select, xlim=xlim, ylim=ylim)
+    average_plot(select=select, xlim=(2420, 2510), ylim=(0, 60))
+    excl_vs_incl(select=select, xlim=(2415, 2480), ylim=(0, 70))
     plt.show()
 
 if __name__ == '__main__':
