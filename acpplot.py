@@ -66,8 +66,8 @@ def sct_projection(ds, lumi=1000):
 
 
 if __name__ == '__main__':
-    hflav_precision(acpdata_dn, 'dn', 'SCT 1 1/ab @ 3.77 GeV')
-    hflav_precision(acpdata_dp, 'dp', 'SCT 1 1/ab @ 3.77 GeV')
-    hflav_precision(acpdata_ds, 'ds', 'SCT 1 1/ab @ 4.17 GeV')
+    hflav_precision(acpdata_dn, 'dn', r'SCT $1~ab^{-1}$ @ 3.77 GeV')
+    hflav_precision(acpdata_dp, 'dp', r'SCT $1~ab^{-1}$ @ 3.77 GeV')
+    hflav_precision(acpdata_ds, 'ds', r'SCT $1~ab^{-1}$ @ 4.17 GeV')
 
     plt.show()
