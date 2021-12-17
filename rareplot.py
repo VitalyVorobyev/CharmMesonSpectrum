@@ -56,52 +56,29 @@ def strip_val(v):
     return v[0] if isinstance(v, tuple) else v
 
 def preprocess_data():
+    ctau = set(['BESIII', 'CLEOc'])
+
+    def aux(ds, key, rdata, rmodes):
+        for mode, data in ds.items():
+            if ctau & set([item[1] for item in data]):
+                newmode = fr'${key} \to $' + mode
+                rdata[newmode] = data
+                rmodes.append([newmode, strip_val(data[-1][0])])
+
     rare_data = dict()
     rare_modes = []
-    ctau = set(['BESIII', 'CLEOc'])
-    for mode, data in rare_dn.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D^0 \to $' + mode
-            rare_data[newmode] = data
-            rare_modes.append([newmode, strip_val(data[-1][0])])
-
-    for mode, data in rare_dp.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D^+ \to $' + mode
-            rare_data[newmode] = data
-            rare_modes.append([newmode, strip_val(data[-1][0])])
-
-    for mode, data in rare_ds.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D_s^+ \to $' + mode
-            rare_data[newmode] = data
-            rare_modes.append([newmode, strip_val(data[-1][0])])
+    aux(rare_dn, 'D^0', rare_data, rare_modes)
+    aux(rare_dp, 'D^+', rare_data, rare_modes)
+    aux(rare_ds, 'D_s^+', rare_data, rare_modes)
 
     lfv_data = dict()
     lfv_modes = []
-    for mode, data in lfv_dn.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D^0 \to $' + mode
-            lfv_data[newmode] = data
-            lfv_modes.append([newmode, strip_val(data[-1][0])])
-    
-    for mode, data in lfv_dp.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D^+ \to $' + mode
-            lfv_data[newmode] = data
-            lfv_modes.append([newmode, strip_val(data[-1][0])])
+    aux(lfv_dn, 'D^0', lfv_data, lfv_modes)
+    aux(lfv_dp, 'D^+', lfv_data, lfv_modes)
+    aux(lfv_ds, 'D_s^+', lfv_data, lfv_modes)
 
-    for mode, data in lfv_ds.items():
-        if ctau & set([item[1] for item in data]):
-            newmode = r'$D_s^+ \to $' + mode
-            lfv_data[newmode] = data
-            lfv_modes.append([newmode, strip_val(data[-1][0])])
-
-    rare_modes = sorted(rare_modes, key=lambda x: x[1])
-    rare_modes = [item[0] for item in rare_modes]
-
-    lfv_modes = sorted(lfv_modes, key=lambda x: x[1])
-    lfv_modes = [item[0] for item in lfv_modes]
+    rare_modes = [item[0] for item in sorted(rare_modes, key=lambda x: x[1])]
+    lfv_modes = [item[0] for item in sorted(lfv_modes, key=lambda x: x[1])]
 
     return (rare_data, rare_modes), (lfv_data, lfv_modes)
 
