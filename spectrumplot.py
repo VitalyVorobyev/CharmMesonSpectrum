@@ -5,7 +5,7 @@ from states import STATES, PREDICTIED, PREDICTIED_DS
 
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.rcParams['font.size'] = 16
+matplotlib.rcParams['font.size'] = 18
 
 
 def state2line(st):
@@ -24,19 +24,22 @@ def godfrey_plot():
     cgen = pycol_gen()
     col1, col2 = next(cgen), next(cgen)
 
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(8, 10))
+
+    plt.plot([5, 5], [2400, 2400], '--', color=col1, label=r'Potential model for $c\bar{q}$')
+    plt.plot([5, 5], [2400, 2400], ':', color=col2, label=r'Potential model for $c\bar{s}$')
 
     for state, [name, mass] in PREDICTIED.items():
         plt.plot(state2line(state)[0], [mass, mass], '--', color=col1)
 
     for state, [name, mass] in PREDICTIED_DS.items():
         x = state2line(state)[0]
-        plt.plot([x[0] + 0.7, x[1] + 0.7], [mass, mass], ':', color=col2)
+        plt.plot([x[0] + 0.6, x[1] + 0.6], [mass, mass], ':', color=col2)
 
     x, y, yerr = [], [], []
     xs, ys, yerrs = [], [], []
     cnt = {'S': -0.4, 'P': -0.4, 'D': -0.35, 'F': -0.15}
-    cnts = {'S': -0.23, 'P': -0.4, 'D': -0.08, 'F': -0.15}
+    cnts = {'S': -0.23, 'P': -0.4, 'D': -0.23, 'F': -0.15}
     for _, data in STATES.items():
         mass, dmass = data['massPDG']
         spdf, lbl = state2line(data['assignment'])
@@ -45,7 +48,7 @@ def godfrey_plot():
             if '2' == data['assignment'][1]:
                 cnts[lbl] = -0.15
             cnts[lbl] += 0.15
-            xs.append(spdf[0] + 1.0 + cnts[lbl])
+            xs.append(spdf[0] + 0.9 + cnts[lbl])
             ys.append(mass)
             yerrs.append(dmass)
         else:
@@ -68,10 +71,13 @@ def godfrey_plot():
 
     plt.xticks(xticks, xlabels)
     plt.xlim((0, 8.5))
+    plt.xlabel('Angular moment')
+    plt.ylabel('Mass (MeV)')
     plt.minorticks_on()
     plt.grid(which='major')
     plt.grid(which='minor', linestyle=':')
     plt.tight_layout()
+    plt.savefig('plots/d-meson-spec.pdf')
 
 
 if __name__ == '__main__':
