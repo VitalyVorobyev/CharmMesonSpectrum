@@ -41,6 +41,8 @@ STATES = {
         'name' : r'$D_0^*(2300)^0$',
         'fs': [r'$D^+\pi^-$'],
         'jp': r'$0^+$',
+        'massPDG': (2343, 10),
+        'widthPDG': (229, 16),
         'assignment': r'$1^3P_0$',
     },
     'M179' : {
