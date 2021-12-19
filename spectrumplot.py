@@ -7,6 +7,11 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams['font.size'] = 18
 
+kmass = 493.677 # K+
+thresholds = {
+    'd0k+': [r'$D^0K^+$', STATES['S032']['massPDG'][0] + kmass],
+    'd*0k+': [r'$D^{*0}K^+$', STATES['M061']['massPDG'][0] + kmass],
+}
 
 def state2line(st):
     if 'S' in st:
@@ -26,8 +31,10 @@ def godfrey_plot():
 
     plt.figure(figsize=(8, 10))
 
-    plt.plot([5, 5], [2400, 2400], '--', color=col1, label=r'Potential model for $c\bar{q}$')
-    plt.plot([5, 5], [2400, 2400], ':', color=col2, label=r'Potential model for $c\bar{s}$')
+    plt.plot([5, 5], [2400, 2400], '--', color=col1,
+             label=r'Potential model for $c\bar{q}$')
+    plt.plot([5, 5], [2400, 2400], ':', color=col2,
+             label=r'Potential model for $c\bar{s}$')
 
     for state, [name, mass] in PREDICTIED.items():
         plt.plot(state2line(state)[0], [mass, mass], '--', color=col1)
@@ -66,6 +73,10 @@ def godfrey_plot():
 
     xlabels = [fr'${item}$' for item in 'SPDF']
     xticks = [1.3, 3.3, 5.3, 7.3]
+
+    for _, thr in thresholds.items(): 
+        plt.plot((0, 8.5), [thr[1], thr[1]], 'k--', alpha=0.6)
+        plt.text(7, thr[1], thr[0])
 
     plt.legend()
 
