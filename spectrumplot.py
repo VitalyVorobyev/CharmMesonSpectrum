@@ -2,7 +2,9 @@
 
 from colors import pycol_gen
 from states import STATES, PREDICTIED, PREDICTIED_DS
+import baryons as b
 
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams['font.size'] = 18
@@ -91,6 +93,107 @@ def godfrey_plot():
     plt.savefig('plots/d-meson-spec.pdf')
 
 
+def draw_meson_predictions(ax, col1, col2):
+    ax.plot([5, 5], [2400, 2400], '--', color=col1, label=r'Potential model for $c\bar{q}$')
+    ax.plot([5, 5], [2400, 2400], ':', color=col2, label=r'Potential model for $c\bar{s}$')
+
+    for state, [name, mass] in PREDICTIED.items():
+        x = state2line(state)[0]
+        ax.plot([x[0] - 0.3, x[1] - 0.3], [mass, mass], '--', color=col1)
+
+    for state, [name, mass] in PREDICTIED_DS.items():
+        x = state2line(state)[0]
+        ax.plot([x[0] + 0.3, x[1] + 0.3], [mass, mass], ':', color=col2)
+
+
+def draw_meson_observed(ax, col1, col2):
+    x, y, yerr = [], [], []
+    xs, ys, yerrs = [], [], []
+    cnt = {'S': -0.4, 'P': -0.4, 'D': -0.35, 'F': -0.15}
+    cnts = {'S': -0.23, 'P': -0.4, 'D': -0.23, 'F': -0.15}
+    for _, data in STATES.items():
+        mass, dmass = data['massPDG']
+        spdf, lbl = state2line(data['assignment'])
+
+        if 's' in data['name']:
+            if '2' == data['assignment'][1]:
+                cnts[lbl] = -0.15
+            cnts[lbl] += 0.15
+            xs.append(spdf[0] + 0.6 + cnts[lbl])
+            ys.append(mass)
+            yerrs.append(dmass)
+        else:
+            if '2' == data['assignment'][1]:
+                cnt[lbl] = -0.15
+            cnt[lbl] += 0.15
+            x.append(spdf[0] + cnt[lbl])
+            y.append(mass)
+            yerr.append(dmass)
+
+    ax.errorbar(x, y, yerr=yerr, fmt='o', color=col1, markersize=7, label=r'Observed $c\bar{q}$')
+    ax.errorbar(xs, ys, yerr=yerrs, fmt='D', color=col2, markersize=7, label=r'Observed $c\bar{s}$')
+
+
+def draw_DK_thresholds(ax):
+    for _, thr in thresholds.items(): 
+        ax.plot((0, 7), [thr[1], thr[1]], 'k--', alpha=0.6)
+        ax.text(5, thr[1], thr[0])
+
+
+def bary_x(lbl):
+    if 'lamc' in lbl:
+        return 0
+    if 'sigmac' in lbl:
+        return 1
+    if 'xic' in lbl:
+        return 2
+    if 'omegac' in lbl:
+        return 3
+    return -1
+
+
+def draw_baryons_observed(ax, col1, col2, col3, col4):
+    x, y, yerr = [[[], [], [], []] for _ in range(3)]
+    for lbl, data in b.STATES.items():
+        idx = bary_x(lbl)
+        if idx < 0:
+            continue
+        x[idx].append(9 + idx)
+        y[idx].append(data['massPDG'][0])
+        yerr[idx].append(data['massPDG'][1])
+    
+    for i, c in enumerate([col1, col2, col3, col4]):
+        label = r'Observed $cqq$' if i == 0 else None
+        ax.errorbar(x[i], y[i], yerr=yerr[i], fmt='^', color=c, markersize=7, label=label)
+
+
+def all_charm_plot():
+    cgen = pycol_gen()
+    col1, col2, col3 = next(cgen), next(cgen), next(cgen)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+    draw_meson_predictions(ax, col1, col2)
+    draw_meson_observed(ax, col1, col2)
+    draw_DK_thresholds(ax)
+    draw_baryons_observed(ax, col3, col3, col3, col3)
+
+    xlabels = [fr'${item}$' for item in 'SPDF'] + [r'$\Lambda_c$', r'$\Sigma_c$', r'$\Xi_c$', r'$\Omega_c$']
+    xticks = list(range(1, 8, 2)) + list(range(9, 13))
+
+    ax.legend(fontsize=16)
+    ax.set_xticks(xticks, xlabels)
+    ax.set_xlim((0, xticks[-1] + 0.7))
+    # ax.set_xlabel(r'$c\bar{q}$ angular moment')
+    plt.text(2, 1670, r'$c\bar{q}$ angular moment')
+    ax.set_ylabel('Mass (MeV)')
+    ax.minorticks_on()
+    ax.grid(which='major')
+    ax.grid(which='minor', linestyle=':')
+    fig.tight_layout()
+    for ext in ['png', 'pdf']:
+        plt.savefig(f'plots/c-hadrons-spec.{ext}')
+
+
 if __name__ == '__main__':
-    godfrey_plot()
+    all_charm_plot()
     plt.show()

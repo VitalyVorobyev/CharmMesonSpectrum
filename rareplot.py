@@ -49,8 +49,7 @@ def rare_plot(ds, modes, fname):
 
     plt.legend()
     plt.tight_layout()
-    for ext in ['pdf', 'png']:
-        plt.savefig(f'plots/{fname}.{ext}')
+    plt.savefig(f'plots/{fname}.pdf')
     plt.show()
 
 def strip_val(v):

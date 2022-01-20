@@ -25,9 +25,9 @@ def hflav_average(ds, key):
     plt.grid(which='major')
     plt.grid(which='minor', linestyle=':')
     plt.ylim((-0.05, 0.05))
+    # plt.semilogy()
     plt.tight_layout()
-    for ext in ['pdf', 'png']:
-        plt.savefig(f'plots/acp_{key}.{ext}')
+    plt.savefig(f'plots/acp_{key}.pdf')
 
 
 def hflav_precision(ds, key, lbl):
@@ -54,8 +54,7 @@ def hflav_precision(ds, key, lbl):
     plt.grid(which='minor', linestyle=':')
     plt.semilogy()
     plt.tight_layout()
-    for ext in ['pdf', 'png']:
-        plt.savefig(f'plots/acp_precision_{key}.{ext}')
+    plt.savefig(f'plots/acp_precision_{key}.pdf')
 
 
 def sct_projection(ds, lumi=1000):
