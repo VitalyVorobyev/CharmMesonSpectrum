@@ -96,12 +96,14 @@ def godfrey_plot():
 def draw_meson_predictions(ax, col1, col2):
     ax.plot([5, 5], [2400, 2400], '--', color=col1, label=r'Potential model for $c\bar{q}$')
     ax.plot([5, 5], [2400, 2400], ':', color=col2, label=r'Potential model for $c\bar{s}$')
+
     for state, [name, mass] in PREDICTIED.items():
-        ax.plot(state2line(state)[0], [mass, mass], '--', color=col1)
+        x = state2line(state)[0]
+        ax.plot([x[0] - 0.3, x[1] - 0.3], [mass, mass], '--', color=col1)
 
     for state, [name, mass] in PREDICTIED_DS.items():
         x = state2line(state)[0]
-        ax.plot([x[0] + 0.6, x[1] + 0.6], [mass, mass], ':', color=col2)
+        ax.plot([x[0] + 0.3, x[1] + 0.3], [mass, mass], ':', color=col2)
 
 
 def draw_meson_observed(ax, col1, col2):
@@ -117,14 +119,14 @@ def draw_meson_observed(ax, col1, col2):
             if '2' == data['assignment'][1]:
                 cnts[lbl] = -0.15
             cnts[lbl] += 0.15
-            xs.append(spdf[0] + 0.9 + cnts[lbl])
+            xs.append(spdf[0] + 0.6 + cnts[lbl])
             ys.append(mass)
             yerrs.append(dmass)
         else:
             if '2' == data['assignment'][1]:
                 cnt[lbl] = -0.15
             cnt[lbl] += 0.15
-            x.append(spdf[0] + 0.3 + cnt[lbl])
+            x.append(spdf[0] + cnt[lbl])
             y.append(mass)
             yerr.append(dmass)
 
@@ -134,8 +136,8 @@ def draw_meson_observed(ax, col1, col2):
 
 def draw_DK_thresholds(ax):
     for _, thr in thresholds.items(): 
-        ax.plot((0, 8.5), [thr[1], thr[1]], 'k--', alpha=0.6)
-        ax.text(7, thr[1], thr[0])
+        ax.plot((0, 7), [thr[1], thr[1]], 'k--', alpha=0.6)
+        ax.text(5, thr[1], thr[0])
 
 
 def bary_x(lbl):
@@ -156,7 +158,7 @@ def draw_baryons_observed(ax, col1, col2, col3, col4):
         idx = bary_x(lbl)
         if idx < 0:
             continue
-        x[idx].append(9.3 + 2 * idx)
+        x[idx].append(9 + idx)
         y[idx].append(data['massPDG'][0])
         yerr[idx].append(data['massPDG'][1])
     
@@ -176,12 +178,13 @@ def all_charm_plot():
     draw_baryons_observed(ax, col3, col3, col3, col3)
 
     xlabels = [fr'${item}$' for item in 'SPDF'] + [r'$\Lambda_c$', r'$\Sigma_c$', r'$\Xi_c$', r'$\Omega_c$']
-    xticks = 1.3 + 2 * np.arange(len(xlabels))
+    xticks = list(range(1, 8, 2)) + list(range(9, 13))
 
     ax.legend(fontsize=16)
     ax.set_xticks(xticks, xlabels)
-    ax.set_xlim((0, xticks[-1] + 1.2))
-    ax.set_xlabel(r'$c\bar{q}$ angular moment')
+    ax.set_xlim((0, xticks[-1] + 0.7))
+    # ax.set_xlabel(r'$c\bar{q}$ angular moment')
+    plt.text(2, 1670, r'$c\bar{q}$ angular moment')
     ax.set_ylabel('Mass (MeV)')
     ax.minorticks_on()
     ax.grid(which='major')
