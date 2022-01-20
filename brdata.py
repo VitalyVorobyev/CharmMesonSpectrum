@@ -43,7 +43,8 @@ def values_plot():
     plt.grid(which='minor', linestyle=':')
     plt.semilogy()
     plt.tight_layout()
-    plt.savefig('plots/charm-branch-val.pdf')
+    for ext in ['pdf', 'png']:
+        plt.savefig(f'plots/charm-branch-val.{ext}')
 
 
 def errors_plot():
@@ -69,7 +70,8 @@ def errors_plot():
     plt.legend(fontsize=18)
     plt.semilogy()
     plt.tight_layout()
-    plt.savefig('plots/charm-branch-err.pdf')
+    for ext in ['pdf', 'png']:
+        plt.savefig(f'plots/charm-branch-err.{ext}')
 
 
 if __name__ == '__main__':
